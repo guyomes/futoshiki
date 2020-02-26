@@ -1,0 +1,4 @@
+.grid7x7 {
+    display: grid;
+    grid-columns-template: repeat(7, 1fr)
+}
