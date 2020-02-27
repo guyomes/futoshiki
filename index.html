@@ -8,21 +8,27 @@
                 --n: 7;
                 --ratio_square: 80;
                 --ratio_gap:    20;
-                --unit: calc(100vw / (var(--n) * var(--ratio_square) + (var(--n) + 1) * var(--ratio_gap)));
-                --gap: calc(var(--unit) * var(--ratio_gap));
-                --square: calc(var(--unit) * var(--ratio_square));
+                --unit: calc(100vmin/(var(--n)*var(--ratio_square) + (var(--n) + 1)*var(--ratio_gap)));
+                --gap: calc(var(--unit)*var(--ratio_gap));
+                --square: calc(var(--unit)*var(--ratio_square));
                 --cell: calc(var(--gap) + var(--square));
-
+                --left: calc((100vw - var(--cell)*var(--n) + var(--gap))/2);
             }
 
             body {
                 margin: 0;
-                padding: 10% 0 0 var(--gap);
+                padding: var(--gap) 0 0 var(--left);
+            }
+
+            @media (orientation:portrait) {
+                .grid7x7 {
+                    bottom: calc(3*var(--cell));
+                }
             }
 
             .grid7x7 {
                 display: grid;
-                padding: 0;
+                position: absolute;
                 grid-template-columns: repeat(var(--n), var(--cell));
                 grid-auto-rows: var(--cell);
             }
@@ -64,14 +70,14 @@
             }
 
             .id16 {
-                font-size: calc(var(--square) / 3);
+                font-size: calc(var(--square)*0.3);
             }
         </style>
     </head>
 
     <body>
         <div class="grid7x7">
-            <div class="cell"> <div class="case id1"> a </div> <div class="right"></div> <div class="below"> &lt;</div> </div>
+            <div class="cell"> <div class="case id1"> a </div> <div class="right"></div> <div class="below">&lt;</div> </div>
             <div class="cell"> <div class="case id2"> b </div> <div class="right">&lt;</div> <div class="below">&lt;</div> </div>
             <div class="cell"> <div class="case id3"> c </div> <div class="right"></div> <div class="below"></div> </div>
             <div class="cell"> <div class="case id4"> d </div> <div class="right"></div> <div class="below"></div> </div>
@@ -86,7 +92,7 @@
             <div class="cell"> <div class="case id13">  </div> <div class="right"></div> <div class="below"></div> </div>
             <div class="cell"> <div class="case id14">  </div> <div class="right"></div> <div class="below"></div> </div>
             <div class="cell"> <div class="case id15">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id16"> 1 2 3 4 5 6 7</div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id16">1 2 3 4 5 6 7</div> <div class="right"></div> <div class="below"></div> </div>
             <div class="cell"> <div class="case id17">  </div> <div class="right"></div> <div class="below"></div> </div>
             <div class="cell"> <div class="case id18">  </div> <div class="right"></div> <div class="below"></div> </div>
             <div class="cell"> <div class="case id19">  </div> <div class="right"></div> <div class="below"></div> </div>
