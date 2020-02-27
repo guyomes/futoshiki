@@ -2,61 +2,124 @@
 <html>
     <head>
         <title> Futoshiki </title>
-        <link rel="stylesheet" type="text/css" href="futoshiki.css">
+        <!--<link rel="stylesheet" type="text/css" href="futoshiki.css">-->
+        <style>
+            :root {
+                --n: 7;
+                --ratio_square: 80;
+                --ratio_gap:    20;
+                --unit: calc(100vw / (var(--n) * var(--ratio_square) + (var(--n) + 1) * var(--ratio_gap)));
+                --gap: calc(var(--unit) * var(--ratio_gap));
+                --square: calc(var(--unit) * var(--ratio_square));
+                --cell: calc(var(--gap) + var(--square));
+
+            }
+
+            body {
+                margin: 0;
+                padding: 10% 0 0 var(--gap);
+            }
+
+            .grid7x7 {
+                display: grid;
+                padding: 0;
+                grid-template-columns: repeat(var(--n), var(--cell));
+                grid-auto-rows: var(--cell);
+            }
+
+            .cell {
+                display: grid;
+                grid-template-columns: var(--square) var(--gap);
+            }
+
+            .case {
+                display: flex;
+                box-sizing: border-box;
+                border: 1px solid;
+                width: var(--square);
+                height: var(--square);
+                font-size: var(--square);
+                justify-content: center;
+                align-items: center;
+            }
+
+            .right {
+                display: flex;
+                font-size: var(--square);
+                width: var(--gap);
+                height: var(--square);
+                justify-content: center;
+                align-items: center;
+                transform: scale(0.2, 1);
+            }
+
+            .below {
+                display: flex;
+                width: var(--square);
+                height: var(--gap);
+                font-size: var(--square);
+                justify-content: center;
+                align-items: center;
+                transform: rotate(90deg) scale(0.2, 1);
+            }
+
+            .id16 {
+                font-size: calc(var(--square) / 3);
+            }
+        </style>
     </head>
 
     <body>
         <div class="grid7x7">
-            <div class="case 1"> a</div>
-            <div class="case 2"> b</div>
-            <div class="case 3"> c</div>
-            <div class="case 4"> d</div>
-            <div class="case 5"> 3 </div>
-            <div class="case 6"> f</div>
-            <div class="case 7"> g</div>
-            <div class="case 8"> </div>
-            <div class="case 9"> </div>
-            <div class="case 10"> </div>
-            <div class="case 11"> </div>
-            <div class="case 11"> </div>
-            <div class="case 12"> </div>
-            <div class="case 13"> </div>
-            <div class="case 14"> </div>
-            <div class="case 15"> </div>
-            <div class="case 16"> 1 2 3 4 5 6 7</div>
-            <div class="case 17"> </div>
-            <div class="case 18"> </div>
-            <div class="case 19"> </div>
-            <div class="case 20"> </div>
-            <div class="case 21"> </div>
-            <div class="case 22"> </div>
-            <div class="case 23"> </div>
-            <div class="case 24"> </div>
-            <div class="case 25"> </div>
-            <div class="case 26"> </div>
-            <div class="case 27"> </div>
-            <div class="case 28"> </div>
-            <div class="case 29"> </div>
-            <div class="case 30"> </div>
-            <div class="case 31"> </div>
-            <div class="case 32"> </div>
-            <div class="case 33"> </div>
-            <div class="case 34"> </div>
-            <div class="case 35"> </div>
-            <div class="case 36"> </div>
-            <div class="case 37"> </div>
-            <div class="case 38"> </div>
-            <div class="case 39"> </div>
-            <div class="case 40"> </div>
-            <div class="case 41"> </div>
-            <div class="case 42"> </div>
-            <div class="case 43"> </div>
-            <div class="case 44"> </div>
-            <div class="case 45"> </div>
-            <div class="case 46"> </div>
-            <div class="case 47"> </div>
-            <div class="case 48"> </div>
-            <div class="case 49"> </div>
+            <div class="cell"> <div class="case id1"> a </div> <div class="right"></div> <div class="below"> &lt;</div> </div>
+            <div class="cell"> <div class="case id2"> b </div> <div class="right">&lt;</div> <div class="below">&lt;</div> </div>
+            <div class="cell"> <div class="case id3"> c </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id4"> d </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id5"> 3 </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id6"> f </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id7"> 9 </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id8">   </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id9">   </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id10">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id11">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id12">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id13">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id14">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id15">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id16"> 1 2 3 4 5 6 7</div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id17">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id18">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id19">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id20">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id21">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id22">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id23">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id24">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id25">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id26">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id27">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id28">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id29">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id30">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id31">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id32">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id33">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id34">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id35">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id36">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id37">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id38">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id39">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id40">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id41">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id42">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id43">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id44">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id45">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id46">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id47">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id48">  </div> <div class="right"></div> <div class="below"></div> </div>
+            <div class="cell"> <div class="case id49">  </div> <div class="right"></div> <div class="below"></div> </div>
         </div>
     </body>
 </html>
