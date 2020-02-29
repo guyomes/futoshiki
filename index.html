@@ -81,6 +81,12 @@
                 align-items: center;
                 transform: rotate(90deg) scale(0.2, 1);
             }
+
+            .hide {
+                visibility: hidden;
+            }
+
+
         </style>
 
         <script type="text/javascript">
@@ -109,9 +115,13 @@
                     board_square[i] = new Array(n);
                     for(j = 0; j < n; j++) {
                         var num = document.createElement("div");
+                        num.addEventListener('click', toggle_2, false);
                         num.classList.add("num");
                         num_content = document.createTextNode(j+1);
                         num.appendChild(num_content);
+                        if(j == 1) {
+                            num.classList.add("hide");
+                        }
                         square.appendChild(num);
                         board_square[i][j] = num;
                     }
@@ -123,6 +133,15 @@
                     left = document.createElement("div")
                     left.classList.add("left");
                     cell.appendChild(left);
+                }
+            }
+
+            function toggle_2() {
+                var num = this.childNodes[1];
+                if(num.classList.contains("hide")) {
+                    num.classList.remove("hide");
+                } else {
+                    num.classList.add("hide");
                 }
             }
         </script>
