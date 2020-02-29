@@ -40,6 +40,7 @@
 
             .square {
                 display: flex;
+                flex-wrap: wrap;
                 box-sizing: border-box;
                 border: 1px solid;
                 width: var(--square);
@@ -53,7 +54,12 @@
             }
 
             .multiple {
-                font-size: calc(var(--square)*0.3);
+                font-size: calc(var(--square)*0.27);
+            }
+
+            .num {
+                width: calc(var(--square)/3.1);
+                text-align: center;
             }
 
             .right {
@@ -79,7 +85,7 @@
 
         <script type="text/javascript">
             var n = getComputedStyle(document.documentElement).getPropertyValue('--n');
-            var board_number = new Array(n*n);
+            var board_square = new Array(n*n);
             var board_left = new Array(n*n);
             var board_right = new Array(n*n);
             var board_up = new Array(n*n);
@@ -100,14 +106,14 @@
                     square.classList.add("multiple");
                     cell.appendChild(square);
 
-                    board[i] = new Array(n);
+                    board_square[i] = new Array(n);
                     for(j = 0; j < n; j++) {
                         var num = document.createElement("div");
                         num.classList.add("num");
                         num_content = document.createTextNode(j+1);
                         num.appendChild(num_content);
                         square.appendChild(num);
-                        board[i][j] = num;
+                        board_square[i][j] = num;
                     }
 
                     right = document.createElement("div")
@@ -123,56 +129,5 @@
     </head>
 
     <body onload="createGrid()">
-        <!--<div class="grid7x7">
-            <div class="cell"> <div class="case id1"> a </div> <div class="right"></div> <div class="below">&lt;</div> </div>
-            <div class="cell"> <div class="case id2"> b </div> <div class="right">&lt;</div> <div class="below">&lt;</div> </div>
-            <div class="cell"> <div class="case id3"> c </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id4"> d </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id5"> 3 </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id6"> f </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id7"> 9 </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id8">   </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id9">   </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id10">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id11">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id12">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id13">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id14">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id15">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id16">1 2 3 4 5 6 7</div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id17">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id18">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id19">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id20">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id21">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id22">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id23">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id24">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id25">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id26">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id27">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id28">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id29">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id30">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id31">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id32">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id33">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id34">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id35">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id36">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id37">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id38">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id39">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id40">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id41">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id42">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id43">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id44">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id45">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id46">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id47">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id48">  </div> <div class="right"></div> <div class="below"></div> </div>
-            <div class="cell"> <div class="case id49">  </div> <div class="right"></div> <div class="below"></div> </div>
-        </div>-->
     </body>
 </html>
