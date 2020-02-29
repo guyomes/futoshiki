@@ -47,19 +47,29 @@
                 height: var(--square);
                 justify-content: center;
                 align-items: center;
+                text-align: center;
+            }
+
+            .board {
+                color: black;
+            }
+
+            .guess {
+                color: grey;
             }
 
             .unique {
-                font-size: var(--square);
+                display: flex;
+                font-size: calc(var(--square)*1.1);
+                width: var(--square);
+                height: var(--square);
+                justify-content: center;
+                align-items: center;
             }
 
             .multiple {
                 font-size: calc(var(--square)*0.27);
-            }
-
-            .num {
                 width: calc(var(--square)/3.1);
-                text-align: center;
             }
 
             .right {
@@ -86,67 +96,107 @@
                 visibility: hidden;
             }
 
+            .remove {
+                display: none;
+            }
+
 
         </style>
 
         <script type="text/javascript">
-            var n = getComputedStyle(document.documentElement).getPropertyValue('--n');
-            var board_square = new Array(n*n);
-            var board_left = new Array(n*n);
-            var board_right = new Array(n*n);
-            var board_up = new Array(n*n);
-            var board_down = new Array(n*n);
+            var n = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--n'));
+            var board_square = Array.from(Array(n), () => new Array(n));
+            var board_horizontal = Array.from(Array(n), () => new Array(n));
+            var board_vertical = Array.from(Array(n), () => new Array(n));
+            var ineq = new Object();
+            ineq["<"] = document.createTextNode("<");
+            ineq[">"] = document.createTextNode(">");
 
             function createGrid() {
                 var grid = document.createElement("div");
                 grid.classList.add("grid");
                 document.body.appendChild(grid);
-                for(i = 0; i < n*n; i++) {
-                    cell = document.createElement("div")
-                    cell.classList.add("cell");
-                    cell.classList.add("id" + i);
-                    grid.appendChild(cell);
-
-                    square = document.createElement("div")
-                    square.classList.add("square");
-                    square.classList.add("multiple");
-                    cell.appendChild(square);
-
-                    board_square[i] = new Array(n);
+                for(i = 0; i < n; i++) {
                     for(j = 0; j < n; j++) {
-                        var num = document.createElement("div");
-                        num.addEventListener('click', toggle_2, false);
-                        num.classList.add("num");
-                        num_content = document.createTextNode(j+1);
-                        num.appendChild(num_content);
-                        if(j == 1) {
-                            num.classList.add("hide");
+                        cell = document.createElement("div")
+                        cell.classList.add("cell");
+                        cell.classList.add("id" + i + j);
+                        grid.appendChild(cell);
+
+                        square = document.createElement("div")
+                        square.classList.add("square");
+                        square.setAttribute('onmousedown', 'toggle_2(this)');
+                        cell.appendChild(square);
+                        board_square[i][j] = square;
+
+                        for(k = 0; k < n; k++) {
+                            var num = document.createElement("div");
+                            num.classList.add("multiple");
+                            num.classList.add("guess");
+                            num_content = document.createTextNode(k+1);
+                            num.appendChild(num_content);
+                            square.appendChild(num);
                         }
-                        square.appendChild(num);
-                        board_square[i][j] = num;
+
+                        right = document.createElement("div")
+                        right.classList.add("right");
+                        cell.appendChild(right);
+                        board_horizontal[i][j] = right;
+
+                        below = document.createElement("div")
+                        below.classList.add("below");
+                        cell.appendChild(below);
+                        board_vertical[i][j] = below;
                     }
-
-                    right = document.createElement("div")
-                    right.classList.add("right");
-                    cell.appendChild(right);
-
-                    left = document.createElement("div")
-                    left.classList.add("left");
-                    cell.appendChild(left);
                 }
             }
 
-            function toggle_2() {
-                var num = this.childNodes[1];
+            // assumes all numbers are visible at first
+            function setNumber(i, j, k) {
+                var num_list = board_square[i-1][j-1].childNodes;
+                for(t = 0; t < n; t++) {
+                    if (t+1 != k) {
+                        num_list[t].classList.add("hide");
+                        num_list[t].classList.add("remove");
+                    }
+                }
+                num_list[k-1].classList.remove("multiple");
+                num_list[k-1].classList.remove("guess");
+                num_list[k-1].classList.add("unique");
+                num_list[k-1].classList.add("board");
+            }
+
+            function loadBoard(numbers, horizontal, vertical) {
+                for(i = 0; i < numbers.length; i++) {
+                    setNumber(numbers[i][0], numbers[i][1], numbers[i][2]);
+                }
+                for(i = 0; i < horizontal.length; i++) {
+                    board_horizontal[horizontal[i][0]-1][horizontal[i][1]-1].appendChild(ineq[horizontal[i][2]].cloneNode());
+                }
+                for(i = 0; i < vertical.length; i++) {
+                    board_vertical[vertical[i][0]-1][vertical[i][1]-1].appendChild(ineq[vertical[i][2]].cloneNode());
+                }
+            }
+
+            function toggle_2(element) {
+                var num = element.childNodes[1];
                 if(num.classList.contains("hide")) {
                     num.classList.remove("hide");
                 } else {
                     num.classList.add("hide");
                 }
             }
+
+            function loadGame() {
+                var numbers = [ [1, 1, 3], [2, 1, 6], [3, 5, 7] ];
+                var horizontal = [ [1, 1, "<"], [5, 2, "<"] ];
+                var vertical = [ [5, 1, "<"], [1, 5, ">"] ];
+                createGrid();
+                loadBoard(numbers, horizontal, vertical);
+            }
         </script>
     </head>
 
-    <body onload="createGrid()">
+    <body onload="loadGame()">
     </body>
 </html>
