@@ -21,12 +21,12 @@
             }
 
             @media (orientation:portrait) {
-                .grid7x7 {
+                .grid {
                     bottom: calc(3*var(--cell));
                 }
             }
 
-            .grid7x7 {
+            .grid {
                 display: grid;
                 position: absolute;
                 grid-template-columns: repeat(var(--n), var(--cell));
@@ -38,15 +38,22 @@
                 grid-template-columns: var(--square) var(--gap);
             }
 
-            .case {
+            .square {
                 display: flex;
                 box-sizing: border-box;
                 border: 1px solid;
                 width: var(--square);
                 height: var(--square);
-                font-size: var(--square);
                 justify-content: center;
                 align-items: center;
+            }
+
+            .unique {
+                font-size: var(--square);
+            }
+
+            .multiple {
+                font-size: calc(var(--square)*0.3);
             }
 
             .right {
@@ -68,15 +75,55 @@
                 align-items: center;
                 transform: rotate(90deg) scale(0.2, 1);
             }
-
-            .id16 {
-                font-size: calc(var(--square)*0.3);
-            }
         </style>
+
+        <script type="text/javascript">
+            var n = getComputedStyle(document.documentElement).getPropertyValue('--n');
+            var board_number = new Array(n*n);
+            var board_left = new Array(n*n);
+            var board_right = new Array(n*n);
+            var board_up = new Array(n*n);
+            var board_down = new Array(n*n);
+
+            function createGrid() {
+                var grid = document.createElement("div");
+                grid.classList.add("grid");
+                document.body.appendChild(grid);
+                for(i = 0; i < n*n; i++) {
+                    cell = document.createElement("div")
+                    cell.classList.add("cell");
+                    cell.classList.add("id" + i);
+                    grid.appendChild(cell);
+
+                    square = document.createElement("div")
+                    square.classList.add("square");
+                    square.classList.add("multiple");
+                    cell.appendChild(square);
+
+                    board[i] = new Array(n);
+                    for(j = 0; j < n; j++) {
+                        var num = document.createElement("div");
+                        num.classList.add("num");
+                        num_content = document.createTextNode(j+1);
+                        num.appendChild(num_content);
+                        square.appendChild(num);
+                        board[i][j] = num;
+                    }
+
+                    right = document.createElement("div")
+                    right.classList.add("right");
+                    cell.appendChild(right);
+
+                    left = document.createElement("div")
+                    left.classList.add("left");
+                    cell.appendChild(left);
+                }
+            }
+        </script>
     </head>
 
-    <body>
-        <div class="grid7x7">
+    <body onload="createGrid()">
+        <!--<div class="grid7x7">
             <div class="cell"> <div class="case id1"> a </div> <div class="right"></div> <div class="below">&lt;</div> </div>
             <div class="cell"> <div class="case id2"> b </div> <div class="right">&lt;</div> <div class="below">&lt;</div> </div>
             <div class="cell"> <div class="case id3"> c </div> <div class="right"></div> <div class="below"></div> </div>
@@ -126,6 +173,6 @@
             <div class="cell"> <div class="case id47">  </div> <div class="right"></div> <div class="below"></div> </div>
             <div class="cell"> <div class="case id48">  </div> <div class="right"></div> <div class="below"></div> </div>
             <div class="cell"> <div class="case id49">  </div> <div class="right"></div> <div class="below"></div> </div>
-        </div>
+        </div>-->
     </body>
 </html>
