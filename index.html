@@ -15,43 +15,75 @@
                 --edge: calc(var(--cell)*var(--n) - var(--gap));
                 --side: calc(var(--edge) / var(--n));
                 --left: calc((100vw - var(--edge))/2);
-
+                --sidepos: calc((100vmin - 3*var(--side))/2);
             }
 
             body {
                 margin: 0;
-                padding: var(--gap) 0 0 var(--left);
+                padding: 0;
+                text-align: center;
             }
 
             @media (orientation:portrait) {
-                .grid {
+                .theme_bar .grid {
                     bottom: calc(3*var(--cell));
+                    left: var(--left);
                 }
 
-                .side {
+                .theme_bar .side {
                     flex-direction: row;
                     bottom: var(--gap);
+                }
+
+                .theme_pad .grid {
+                    bottom: calc(4*var(--cell));
+                    left: var(--left);
+                }
+
+                .theme_pad .side {
+                    bottom: var(--gap);
+                    left: var(--sidepos);
                 }
             }
 
             @media (orientation:landscape) {
-                .side {
+                .theme_bar .side {
                     flex-direction: column;
                     right: var(--gap);
+                }
+
+                .theme_pad .side {
+                    right: var(--gap);
+                    top: var(--sidepos);
+                }
+
+                .theme_pad .grid {
+                    top: var(--gap);
+                    left: calc(1*var(--cell));
                 }
             }
 
             /*side choice list*/
-            .side {
+            .theme_bar .side {
                 display: flex;
                 position: absolute;
                 margin: 0;
                 padding: 0;
             }
 
+            .theme_pad .side {
+                position: absolute;
+                display: flex;
+                flex-wrap: wrap;
+                width: calc(3*var(--side) + 3px);
+                height: calc(3*var(--side) + 3px);
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+
             .side .square {
                 display: flex;
-                box-sizing: border-box;
                 border: 1px solid;
                 width: var(--side);
                 height: var(--side);
@@ -59,6 +91,7 @@
                 justify-content: center;
                 align-items: center;
                 text-align: center;
+                margin: 0 -1px -1px 0;
             }
 
             /*main grid*/
@@ -138,9 +171,13 @@
                 align-items: center;
             }
 
+            .square .alert {
+                color: red;
+            }
+
             /*general style effects*/
-            .strikeout {
-                text-decoration: line-through;
+            .side .strikeout {
+                font-size: 0;
             }
 
             .hide {
@@ -199,6 +236,8 @@
                         square.classList.add("square");
                         square.setAttribute('onmousedown', 'select(this)');
                         square.setAttribute('ontouchstart', 'select(this); event.preventDefault()');
+                        square.setAttribute('row', i);
+                        square.setAttribute('col', j);
                         cell.appendChild(square);
                         board_square[i][j] = square;
 
@@ -267,12 +306,15 @@
 
             function toggle(element) {
                 var num = element.getAttribute("num");
+                var row = parseInt(selected_element.getAttribute("row"));
+                var col = parseInt(selected_element.getAttribute("col"));
                 element.classList.toggle("strikeout");
                 selected_element.childNodes[num].classList.toggle("hide");
                 var count = 0;
                 var unique = 0;
                 for(i = 0; i < n; i++) {
                     selected_element.childNodes[i].classList.remove("unique");
+                    selected_element.childNodes[i].classList.remove("alert");
                     if(selected_element.childNodes[i].classList.contains("hide")) {
                         count += 1;
                     } else {
@@ -281,13 +323,110 @@
                 }
                 if(count == n-1) {
                     selected_element.childNodes[unique].classList.add("unique");
+                    if(!checkLatinRow(row, col, unique)
+                       || !checkLatinCol(row, col, unique)
+                       || !checkIneq(row, col, unique)) {
+                        selected_element.childNodes[unique].classList.add("alert");
+                    }
                 }
+            }
+
+            function checkLatinRow(row, col, unique) {
+                for(i = 0; i < n; i++) {
+                    if(i != col) {
+                        for(j = 0; j < n; j++) {
+                            if(board_square[row][i].childNodes[j].classList.contains("unique")) {
+                                if(j == unique) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function checkLatinCol(row, col, unique) {
+                for(i = 0; i < n; i++) {
+                    if(i != row) {
+                        for(j = 0; j < n; j++) {
+                            if(board_square[i][col].childNodes[j].classList.contains("unique")) {
+                                if(j == unique) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function getUnique(element) {
+                for(j = 0; j < n; j++) {
+                    if(element.childNodes[j].classList.contains("unique")) {
+                        return j;
+                    }
+                }
+                return -1;
+            }
+
+            function checkIneq(row, col, unique) {
+                if(col > 0) {
+                    var candidate = getUnique(board_square[row][col-1]);
+                    if((candidate > -1) &&
+                       ( (candidate >= unique &&
+                          board_horizontal[row][col-1].textContent == "<")
+                         ||
+                         (candidate <= unique &&
+                          board_horizontal[row][col-1].textContent == ">")))
+                    {
+                        return false;
+                    }
+                }
+                if(col < n-1) {
+                    var candidate = getUnique(board_square[row][col+1]);
+                    if((candidate > -1) &&
+                       ( (candidate >= unique &&
+                          board_horizontal[row][col].textContent == ">")
+                         ||
+                         (candidate <= unique &&
+                          board_horizontal[row][col].textContent == "<")))
+                    {
+                        return false;
+                    }
+                }
+                if(row > 0) {
+                    var candidate = getUnique(board_square[row-1][col]);
+                    if((candidate > -1) &&
+                       ( (candidate >= unique &&
+                          board_vertical[row-1][col].textContent == "<")
+                         ||
+                         (candidate <= unique &&
+                          board_vertical[row-1][col].textContent == ">")))
+                    {
+                        return false;
+                    }
+                }
+                if(row < n-1) {
+                    var candidate = getUnique(board_square[row+1][col]);
+                    if((candidate > -1) &&
+                       ( (candidate >= unique &&
+                          board_vertical[row][col].textContent == ">")
+                         ||
+                         (candidate <= unique &&
+                          board_vertical[row][col].textContent == "<")))
+                    {
+                        return false;
+                    }
+                }
+                return true
             }
 
             function loadGame() {
                 var numbers = [ [1, 1, 3], [2, 1, 6], [3, 5, 7] ];
                 var horizontal = [ [1, 1, "<"], [5, 2, "<"] ];
                 var vertical = [ [5, 1, "<"], [1, 5, ">"] ];
+                document.body.classList.add("theme_pad");
                 createSide();
                 createGrid();
                 loadBoard(numbers, horizontal, vertical);
