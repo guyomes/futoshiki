@@ -61,10 +61,6 @@
                 text-align: center;
             }
 
-            .side .strikeout {
-                text-decoration: line-through;
-            }
-
             /*main grid*/
             .grid {
                 display: grid;
@@ -99,17 +95,22 @@
                 transform: rotate(90deg) scale(0.2, 1);
             }
 
-            /*numbers in squares*/
+            /*squares*/
             .cell .square {
                 display: flex;
                 flex-wrap: wrap;
-                box-sizing: border-box;
                 border: 1px solid;
                 width: var(--square);
                 height: var(--square);
                 justify-content: center;
                 align-items: center;
                 text-align: center;
+                margin: -1px;
+            }
+
+            .cell .highlight {
+                border: 4px solid;
+                margin: -4px;
             }
 
             /*number default style*/
@@ -128,6 +129,7 @@
             }
 
             .square .unique {
+                position: absolute;
                 display: flex;
                 font-size: calc(var(--square)*1.1);
                 width: var(--square);
@@ -136,11 +138,16 @@
                 align-items: center;
             }
 
-            .square .hide {
+            /*general style effects*/
+            .strikeout {
+                text-decoration: line-through;
+            }
+
+            .hide {
                 visibility: hidden;
             }
 
-            .square .remove {
+            .remove {
                 display: none;
             }
         </style>
@@ -215,6 +222,7 @@
                         board_vertical[i][j] = below;
                     }
                 }
+                selected_element = board_square[0][0];
             }
 
             // set fixed numbers from a board
@@ -224,11 +232,8 @@
                 for(t = 0; t < n; t++) {
                     if (t+1 != k) {
                         num_list[t].classList.add("hide");
-                        num_list[t].classList.add("remove");
                     }
                 }
-                num_list[k-1].classList.remove("multiple");
-                num_list[k-1].classList.remove("guess");
                 num_list[k-1].classList.add("unique");
                 num_list[k-1].classList.add("board");
             }
@@ -246,16 +251,9 @@
                 }
             }
 
-            function toggle_2(element) {
-                var num = element.childNodes[1];
-                if(num.classList.contains("hide")) {
-                    num.classList.remove("hide");
-                } else {
-                    num.classList.add("hide");
-                }
-            }
-
             function select(element) {
+                selected_element.classList.remove("highlight");
+                element.classList.add("highlight");
                 selected_element = element;
                 for(i = 0; i < n; i++) {
                     num = element.childNodes[i];
@@ -269,8 +267,21 @@
 
             function toggle(element) {
                 var num = element.getAttribute("num");
-                selected_element.childNodes[num].classList.toggle("hide");
                 element.classList.toggle("strikeout");
+                selected_element.childNodes[num].classList.toggle("hide");
+                var count = 0;
+                var unique = 0;
+                for(i = 0; i < n; i++) {
+                    selected_element.childNodes[i].classList.remove("unique");
+                    if(selected_element.childNodes[i].classList.contains("hide")) {
+                        count += 1;
+                    } else {
+                        unique = i;
+                    }
+                }
+                if(count == n-1) {
+                    selected_element.childNodes[unique].classList.add("unique");
+                }
             }
 
             function loadGame() {
