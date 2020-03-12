@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<!--
+               Copyright (C) 2019 Guillaume Moroz
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+                 http://www.gnu.org/licenses/
+-->
 <html>
     <head>
         <title> Futoshiki </title>
@@ -102,7 +111,7 @@
                 flex-wrap: wrap;
                 width: calc(3*var(--side) + 3px);
                 height: calc(3*var(--side) + 3px);
-                justify-content: center;
+                justify-content: left;
                 align-items: center;
                 text-align: center;
             }
@@ -169,8 +178,8 @@
                 border: 1px solid;
                 width: var(--square);
                 height: var(--square);
-                justify-content: center;
-                align-items: center;
+                justify-content: left;
+                align-items: top;
                 text-align: center;
                 margin: -1px;
             }
@@ -191,8 +200,9 @@
             }
 
             .square .multiple {
-                font-size: calc(var(--square)*0.27);
+                font-size: calc(var(--square)/3);
                 width: calc(var(--square)/3.1);
+                height: calc(var(--square)/3);
             }
 
             /*number variable style*/
@@ -285,6 +295,8 @@
                         square.classList.add("square");
                         square.setAttribute('row', i);
                         square.setAttribute('col', j);
+                        square.setAttribute('onmousedown', 'modeGuess(); select(this)');
+                        square.setAttribute('ontouchstart', 'modeGuess(); select(this); event.preventDefault()');
                         cell.appendChild(square);
                         board_square[i][j] = square;
 
@@ -292,6 +304,7 @@
                             var num = document.createElement("div");
                             num.classList.add("multiple");
                             num.classList.add("guess");
+                            num.classList.add("hide");
                             num_content = document.createTextNode(k+1);
                             num.appendChild(num_content);
                             square.appendChild(num);
@@ -314,13 +327,6 @@
                 if(board_highlight != null) {
                     board_highlight.classList.remove("focus");
                 }
-                selected_element = null;
-                for(i = 0; i < n; i++) {
-                    for(j = 0; j < n; j++) {
-                        board_square[i][j].setAttribute('onmousedown', 'select(this)');
-                        board_square[i][j].setAttribute('ontouchstart', 'select(this); event.preventDefault()');
-                    }
-                }
                 for(i = 0; i < n; i++) {
                     board_side[i].setAttribute('onmousedown', 'toggleGuess(this)');
                     board_side[i].setAttribute('ontouchstart', 'toggleGuess(this); event.preventDefault()');
@@ -334,12 +340,6 @@
                 }
                 if(board_highlight != null) {
                     board_highlight.classList.add("focus");
-                }
-                for(i = 0; i < n; i++) {
-                    for(j = 0; j < n; j++) {
-                        board_square[i][j].setAttribute('onmousedown', 'modeGuess(); select(this)');
-                        board_square[i][j].setAttribute('ontouchstart', 'modeGuess(); select(this); event.preventDefault()');
-                    }
                 }
                 for(i = 0; i < n; i++) {
                     board_side[i].setAttribute('onmousedown', 'toggleHighlight(this)');
@@ -382,14 +382,12 @@
             }
 
             // set fixed numbers from a board
-            // assumes all numbers are visible at first
+            // assumes no number are visible at first
             function setBoardNumber(i, j, k) {
+                board_square[i-1][j-1].removeAttribute('onmousedown');
+                board_square[i-1][j-1].removeAttribute('ontouchstart');
                 var num_list = board_square[i-1][j-1].childNodes;
-                for(t = 0; t < n; t++) {
-                    if (t+1 != k) {
-                        num_list[t].classList.add("hide");
-                    }
-                }
+                num_list[k-1].classList.remove("hide");
                 num_list[k-1].classList.add("unique");
                 num_list[k-1].classList.add("board");
             }
@@ -452,6 +450,17 @@
                         selected_element.childNodes[unique].classList.add("alert");
                     }
                 }
+                // update highlight
+                selected_element.classList.remove("highlight");
+                for(k = 0; k < n; k++) {
+                    if(board_side[k].classList.contains("highlight")
+                       &&
+                       !selected_element.childNodes[k].classList.contains("hide")) {
+                        selected_element.classList.add("highlight");
+                        break;
+                    }
+                }
+
             }
 
             function checkLatinRow(row, col, unique) {
