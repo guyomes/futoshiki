@@ -109,7 +109,6 @@ body {
     width: var(--side);
     height: var(--side);
     border: 1px solid;
-    background-color: lightgray;
 }
 
 .button_undo {

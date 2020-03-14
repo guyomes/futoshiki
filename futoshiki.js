@@ -25,15 +25,17 @@ var selected_element = null;
 
 // Menu drawing : Edit, Guess, Highlight, Undo, Choose
 function createMenu() {
-    var highlight = document.createElement("div");
+    var highlight = document.createElement("img");
     highlight.classList.add("button_highlight");
+    highlight.setAttribute('src', 'highlighter.svg');
     highlight.setAttribute('onmousedown', 'modeHighlight()');
     highlight.setAttribute('ontouchstart', 'modeHighlight(); event.preventDefault()');
     document.body.appendChild(highlight);
     board_highlight = highlight;
 
-    var undo = document.createElement("div");
+    var undo = document.createElement("img");
     undo.classList.add("button_undo");
+    undo.setAttribute('src', 'undo.svg');
     undo.setAttribute('onmousedown', 'actionUndo()');
     undo.setAttribute('ontouchstart', 'actionUndo(); event.preventDefault()');
     document.body.appendChild(undo);
