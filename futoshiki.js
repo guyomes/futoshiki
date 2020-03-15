@@ -15,6 +15,9 @@ var board_horizontal = Array.from(Array(n), () => new Array(n));
 var board_vertical = Array.from(Array(n), () => new Array(n));
 var board_side = new Array(n);
 var board_highlight = null;
+var board_undo = null;
+var delta = 10;
+var rotation = 0;
 var board_side = null;
 var undo_list = [];
 var ineq = new Object();
@@ -27,7 +30,7 @@ var selected_element = null;
 function createMenu() {
     var highlight = document.createElement("img");
     highlight.classList.add("button_highlight");
-    highlight.setAttribute('src', 'highlighter.svg');
+    highlight.setAttribute('src', '/futoshiki/highlighter.svg');
     highlight.setAttribute('onmousedown', 'modeHighlight()');
     highlight.setAttribute('ontouchstart', 'modeHighlight(); event.preventDefault()');
     document.body.appendChild(highlight);
@@ -35,7 +38,7 @@ function createMenu() {
 
     var undo = document.createElement("img");
     undo.classList.add("button_undo");
-    undo.setAttribute('src', 'undo.svg');
+    undo.setAttribute('src', '/futoshiki/undo.svg');
     undo.setAttribute('onmousedown', 'actionUndo()');
     undo.setAttribute('ontouchstart', 'actionUndo(); event.preventDefault()');
     document.body.appendChild(undo);
@@ -117,6 +120,8 @@ function actionUndo() {
 
     select(board_square[i][j]);
     toggleGuess(board_side[num]);
+    rotation -= 2*delta;
+    board_undo.style.transform = "rotate("+ rotation + "deg)";
     if(!alert) {
         board_square[i][j].childNodes[num].classList.remove("alert");
         board_side[num].classList.remove("alert");
@@ -126,9 +131,7 @@ function actionUndo() {
 
 function modeGuess() {
     board_side.classList.remove("mode_highlight");
-    if(board_highlight != null) {
-        board_highlight.classList.remove("focus");
-    }
+    board_highlight.classList.remove("focus");
     var is_highlighted = false;
     for(i = 0; i < n; i++) {
         board_side[i].setAttribute('onmousedown', 'toggleGuess(this)');
@@ -154,9 +157,7 @@ function modeHighlight() {
         selected_element.classList.remove("focus");
         selected_element = null;
     }
-    if(board_highlight != null) {
-        board_highlight.classList.add("focus");
-    }
+    board_highlight.classList.add("focus");
     for(i = 0; i < n; i++) {
         board_side[i].setAttribute('onmousedown', 'toggleHighlight(this)');
         board_side[i].setAttribute('ontouchstart', 'toggleHighlight(this); event.preventDefault()');
@@ -289,6 +290,8 @@ function toggleGuess(element) {
             break;
         }
     }
+    rotation += delta;
+    board_undo.style.transform = "rotate("+ rotation + "deg)";
     undo_list.push([row, col, num, was_alert]);
 }
 
