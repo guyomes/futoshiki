@@ -9,7 +9,11 @@ the Free Software Foundation, either version 2 of the License, or
 *******************************************************************/
 
 // Global variables
-var n = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--n'));
+var difficultyLabels = ["&#9733;", "&#9733; &#9733;", "&#9733; &#9733; &#9733;"];
+var difficulty = 1;
+var size = 1;
+//var n = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--n'));
+var n = 9;
 var board_square = Array.from(Array(n), () => new Array(n));
 var board_horizontal = Array.from(Array(n), () => new Array(n));
 var board_vertical = Array.from(Array(n), () => new Array(n));
@@ -18,7 +22,7 @@ var board_highlight = null;
 var board_undo = null;
 var delta = 10;
 var rotation = 0;
-var board_side = null;
+var board_side_main = null;
 var undo_list = [];
 var ineq = new Object();
 ineq["<"] = document.createTextNode("<");
@@ -130,7 +134,7 @@ function actionUndo() {
 }
 
 function modeGuess() {
-    board_side.classList.remove("mode_highlight");
+    board_side_main.classList.remove("mode_highlight");
     board_highlight.classList.remove("focus");
     var is_highlighted = false;
     for(i = 0; i < n; i++) {
@@ -152,7 +156,7 @@ function modeGuess() {
 }
 
 function modeHighlight() {
-    board_side.classList.add("mode_highlight");
+    board_side_main.classList.add("mode_highlight");
     if(selected_element != null) {
         selected_element.classList.remove("focus");
         selected_element = null;
@@ -386,6 +390,103 @@ function checkIneq(row, col, unique) {
     return true
 }
 
+/* UI for level screen */
+
+// Menu drawing : Edit, Guess, Highlight, Undo, Choose
+function createMenuLevels() {
+    var highlight = document.createElement("div");
+    highlight.classList.add("button_highlight");
+    highlight.textContent = ">";
+    highlight.setAttribute('onmousedown', 'increaseDifficulty()');
+    highlight.setAttribute('ontouchstart', 'increaseDifficulty(); event.preventDefault()');
+    document.body.appendChild(highlight);
+    board_highlight = highlight;
+
+    var undo = document.createElement("img");
+    undo.classList.add("button_undo");
+    highlight.textContent = "<";
+    undo.setAttribute('onmousedown', 'decreaseDifficulty()');
+    undo.setAttribute('ontouchstart', 'decreaseDifficulty(); event.preventDefault()');
+    document.body.appendChild(undo);
+    board_undo = undo;
+}
+
+// Side bar drawing
+function createSideLevels() {
+    var side = document.createElement("div");
+    side.classList.add("side");
+    board_side_main = side;
+    document.body.appendChild(side);
+    label = document.createElement("div");
+    label.classList.add("label");
+    label.innerHTML = difficultyLabels[difficulty];
+    side.append(label);
+    for(i = 4; i <= 9; i++) {
+        square = document.createElement("div")
+        square.classList.add("square");
+        square.classList.add("strikeout");
+        square.setAttribute('num', i)
+        square.setAttribute('onmousedown', 'setSize(' + i + ')');
+        square.setAttribute('ontouchstart', 'setSize(' + i + '); event.preventDefault()');
+        num_content = document.createTextNode(i+1);
+        square.appendChild(num_content);
+        side.appendChild(square);
+        board_side[i] = square;
+    }
+}
+
+// Grid drawing and styling
+function createGridLevels() {
+    var grid = document.createElement("div");
+    grid.classList.add("grid");
+    document.body.appendChild(grid);
+    for(i = 0; i < n; i++) {
+        for(j = 0; j < n; j++) {
+            cell = document.createElement("div")
+            cell.classList.add("cell");
+            grid.appendChild(cell);
+
+            square = document.createElement("div")
+            square.classList.add("square");
+            square.setAttribute('row', i);
+            square.setAttribute('col', j);
+            square.setAttribute('onmousedown', 'loadLevel(this);');
+            square.setAttribute('ontouchstart', 'loadLevel(this); event.preventDefault()');
+            square.textContent = (n*i + j).toString();
+            cell.appendChild(square);
+            board_square[i][j] = square;
+        }
+    }
+}
+
+
+function increaseDifficulty() {
+    if(difficulty == 0) {
+        difficulty += 1;
+    } else if (difficulty == 1) {
+        difficulty += 1;
+    } else if (difficulty == 2) {
+    }
+    label.innerHTML = difficultyLabels[difficulty];
+}
+
+function decreaseDifficulty() {
+    if(difficulty == 0) {
+    } else if (difficulty == 1) {
+        difficulty -= 1;
+    } else if (difficulty == 2) {
+        difficulty -= 1;
+    }
+    label.innerHTML = difficultyLabels[difficulty];
+}
+
+function setSize(i) {
+    size = i;
+}
+
+function loadLevel(element) {
+}
+
 function loadGame(numbers, horizontal, vertical) {
     document.body.classList.add("theme_pad");
     createMenu();
@@ -393,4 +494,11 @@ function loadGame(numbers, horizontal, vertical) {
     createGrid();
     modeGuess();
     loadBoard(numbers, horizontal, vertical);
+}
+
+function loadChooseLevels() {
+    document.body.classList.add("theme_pad");
+    createMenuLevels();
+    createSideLevels();
+    createGridLevels();
 }

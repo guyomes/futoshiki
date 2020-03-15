@@ -1,6 +1,7 @@
 :root {
     --ratio_square: 80;
     --ratio_gap:    20;
+    --n: 9;
 }
 
 @media (orientation:portrait) and (max-aspect-ratio: 2/3) {
@@ -143,6 +144,17 @@ body .focus {
     color: gray;
 }
 
+.side .label {
+    display: flex;
+    width: calc(3*var(--side));
+    height: var(--side);
+    font-size: calc(var(--side)*0.7);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0 -1px -1px 0;
+}
+
 .side .square {
     display: flex;
     width: var(--side);
@@ -224,6 +236,7 @@ body .focus {
     align-items: top;
     text-align: center;
     margin: -1px;
+    font-size: calc(var(--square)*0.5);
 }
 
 /*squares variable style*/
