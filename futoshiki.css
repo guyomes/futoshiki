@@ -75,6 +75,16 @@ body {
         bottom: calc(var(--side) + var(--gap));
         left: calc(var(--sideleft) - var(--gap) - var(--side));
     }
+
+    .theme_pad .button_harder {
+        bottom: calc(var(--side) + var(--gap));
+        left: calc(var(--sideleft) + 3*(var(--side)) + var(--gap));
+    }
+
+    .theme_pad .button_easier {
+        bottom: calc(var(--side) + var(--gap));
+        left: calc(var(--sideleft) - var(--gap) - var(--side));
+    }
 }
 
 @media (orientation:landscape) {
@@ -102,6 +112,18 @@ body {
         right: calc(var(--gap) + var(--side));
         top: calc(var(--sidetop) + var(--gap) + 3*var(--side));
     }
+
+    .theme_pad .button_harder {
+        right: calc(var(--gap) + var(--side));
+        top: calc(var(--sidetop) - var(--gap) - var(--side));
+        transform: rotate(-90deg);
+    }
+
+    .theme_pad .button_easier {
+        right: calc(var(--gap) + var(--side));
+        top: calc(var(--sidetop) + var(--gap) + 3*var(--side));
+        transform: rotate(-90deg);
+    }
 }
 
 /*Menu buttons*/
@@ -115,6 +137,26 @@ body {
     position: absolute;
     width: var(--side);
     height: var(--side);
+}
+
+.button_harder {
+    display: flex;
+    position: absolute;
+    width: var(--side);
+    height: var(--side);
+    font-size: var(--side);
+    justify-content: center;
+    align-items: center;
+}
+
+.button_easier {
+    display: flex;
+    position: absolute;
+    width: var(--side);
+    height: var(--side);
+    font-size: var(--side);
+    justify-content: center;
+    align-items: center;
 }
 
 body .focus {
@@ -247,6 +289,12 @@ body .focus {
 
 .cell .highlight {
     background-color: lightgray;
+}
+
+.cell .center {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 /*number default style*/

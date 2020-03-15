@@ -394,21 +394,19 @@ function checkIneq(row, col, unique) {
 
 // Menu drawing : Edit, Guess, Highlight, Undo, Choose
 function createMenuLevels() {
-    var highlight = document.createElement("div");
-    highlight.classList.add("button_highlight");
-    highlight.textContent = ">";
-    highlight.setAttribute('onmousedown', 'increaseDifficulty()');
-    highlight.setAttribute('ontouchstart', 'increaseDifficulty(); event.preventDefault()');
-    document.body.appendChild(highlight);
-    board_highlight = highlight;
+    var harder = document.createElement("div");
+    harder.classList.add("button_harder");
+    harder.textContent = ">";
+    harder.setAttribute('onmousedown', 'increaseDifficulty()');
+    harder.setAttribute('ontouchstart', 'increaseDifficulty(); event.preventDefault()');
+    document.body.appendChild(harder);
 
-    var undo = document.createElement("img");
-    undo.classList.add("button_undo");
-    highlight.textContent = "<";
-    undo.setAttribute('onmousedown', 'decreaseDifficulty()');
-    undo.setAttribute('ontouchstart', 'decreaseDifficulty(); event.preventDefault()');
-    document.body.appendChild(undo);
-    board_undo = undo;
+    var easier = document.createElement("div");
+    easier.classList.add("button_easier");
+    easier.textContent = "<";
+    easier.setAttribute('onmousedown', 'decreaseDifficulty()');
+    easier.setAttribute('ontouchstart', 'decreaseDifficulty(); event.preventDefault()');
+    document.body.appendChild(easier);
 }
 
 // Side bar drawing
@@ -448,11 +446,12 @@ function createGridLevels() {
 
             square = document.createElement("div")
             square.classList.add("square");
+            square.classList.add("center");
             square.setAttribute('row', i);
             square.setAttribute('col', j);
             square.setAttribute('onmousedown', 'loadLevel(this);');
             square.setAttribute('ontouchstart', 'loadLevel(this); event.preventDefault()');
-            square.textContent = (n*i + j).toString();
+            square.textContent = (n*i + j + 1).toString();
             cell.appendChild(square);
             board_square[i][j] = square;
         }
