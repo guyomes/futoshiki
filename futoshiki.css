@@ -108,15 +108,12 @@ body {
     position: absolute;
     width: var(--side);
     height: var(--side);
-    border: 1px solid;
 }
 
 .button_undo {
     position: absolute;
     width: var(--side);
     height: var(--side);
-    border: 1px solid;
-    background-color: white;
 }
 
 body .focus {
