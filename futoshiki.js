@@ -11,7 +11,7 @@ the Free Software Foundation, either version 2 of the License, or
 // Global variables
 var difficultyLabels = ["&#9733;", "&#9733; &#9733;", "&#9733; &#9733; &#9733;"];
 var difficulty = 1;
-var size = 1;
+var size = 7;
 //var n = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--n'));
 var n = 9;
 var board_square = Array.from(Array(n), () => new Array(n));
@@ -25,8 +25,8 @@ var rotation = 0;
 var board_side_main = null;
 var undo_list = [];
 var ineq = new Object();
-ineq["<"] = document.createTextNode("<");
-ineq[">"] = document.createTextNode(">");
+ineq["<"] = "&#9650;";
+ineq[">"] = "&#9660;";
 
 var selected_element = null;
 
@@ -217,15 +217,15 @@ function setBoardNumber(i, j, k) {
 }
 
 // fill board with a game given by 3 arrays
-function loadBoard(numbers, horizontal, vertical) {
+function loadBoard(numbers, horizontals, verticals) {
     for(i = 0; i < numbers.length; i++) {
         setBoardNumber(numbers[i][0], numbers[i][1], numbers[i][2]);
     }
-    for(i = 0; i < horizontal.length; i++) {
-        board_horizontal[horizontal[i][0]-1][horizontal[i][1]-1].appendChild(ineq[horizontal[i][2]].cloneNode());
+    for(i = 0; i < horizontals.length; i++) {
+        board_horizontal[horizontals[i][0]-1][horizontals[i][1]-1].innerHTML = ineq[horizontals[i][2]];
     }
-    for(i = 0; i < vertical.length; i++) {
-        board_vertical[vertical[i][0]-1][vertical[i][1]-1].appendChild(ineq[vertical[i][2]].cloneNode());
+    for(i = 0; i < verticals.length; i++) {
+        board_vertical[verticals[i][0]-1][verticals[i][1]-1].innerHTML = ineq[verticals[i][2]];
     }
 }
 
@@ -283,6 +283,12 @@ function toggleGuess(element) {
     }
     if(count == n-1) {
         selected_element.childNodes[unique].classList.add("unique");
+        if(!checkLatinRow(row, col, unique)
+               || !checkLatinCol(row, col, unique)
+               || !checkIneq(row, col, unique)) {
+            selected_element.childNodes[unique].classList.add("alert");
+            board_side[unique].classList.add("alert");
+        }
     }
     // update highlight
     selected_element.classList.remove("highlight");
@@ -413,19 +419,19 @@ function createMenuLevels() {
 function createSideLevels() {
     var side = document.createElement("div");
     side.classList.add("side");
+    side.classList.add("mode_highlight");
     board_side_main = side;
     document.body.appendChild(side);
     label = document.createElement("div");
     label.classList.add("label");
     label.innerHTML = difficultyLabels[difficulty];
-    side.append(label);
-    for(i = 4; i <= 9; i++) {
+    side.appendChild(label);
+    for(i = 3; i < 9; i++) {
         square = document.createElement("div")
         square.classList.add("square");
-        square.classList.add("strikeout");
         square.setAttribute('num', i)
-        square.setAttribute('onmousedown', 'setSize(' + i + ')');
-        square.setAttribute('ontouchstart', 'setSize(' + i + '); event.preventDefault()');
+        square.setAttribute('onmousedown', 'setSize(this)');
+        square.setAttribute('ontouchstart', 'setSize(this); event.preventDefault()');
         num_content = document.createTextNode(i+1);
         square.appendChild(num_content);
         side.appendChild(square);
@@ -438,8 +444,8 @@ function createGridLevels() {
     var grid = document.createElement("div");
     grid.classList.add("grid");
     document.body.appendChild(grid);
-    for(i = 0; i < n; i++) {
-        for(j = 0; j < n; j++) {
+    for(i = 0; i < 9; i++) {
+        for(j = 0; j < 9; j++) {
             cell = document.createElement("div")
             cell.classList.add("cell");
             grid.appendChild(cell);
@@ -451,7 +457,7 @@ function createGridLevels() {
             square.setAttribute('col', j);
             square.setAttribute('onmousedown', 'loadLevel(this);');
             square.setAttribute('ontouchstart', 'loadLevel(this); event.preventDefault()');
-            square.textContent = (n*i + j + 1).toString();
+            square.textContent = (9*i + j + 1).toString();
             cell.appendChild(square);
             board_square[i][j] = square;
         }
@@ -479,20 +485,75 @@ function decreaseDifficulty() {
     label.innerHTML = difficultyLabels[difficulty];
 }
 
-function setSize(i) {
-    size = i;
+function setSize(element) {
+    board_side[size-1].classList.remove("focus_light");
+    size = parseInt(element.getAttribute("num")) + 1;
+    element.classList.add("focus_light");
 }
+
+
+function buildUrl(num) {
+    var url = "/futoshiki/puzzles/";
+    var url_difficulty = ["Easy", "Tricky", "Extreme"];
+    var url_size = ["04x04", "05x05", "06x06", "07x07", "08x08", "09x09"];
+    var url_id = "00" + ("0"+num).slice(-2);
+    var file_url = url + "/" + url_difficulty[difficulty] + "/" + url_size[size - 4] + "/Puzzle" + url_id + ".txt";
+    return file_url;
+}
+
 
 function loadLevel(element) {
+    var num = element.textContent;
+    var file_url = buildUrl(num);
+    var rawFile = new XMLHttpRequest();
+    rawFile.onload = loadLevelReady;
+    rawFile.open("GET",file_url,true);
+    rawFile.send(null);
 }
 
-function loadGame(numbers, horizontal, vertical) {
+function loadLevelReady() {
+    var puzzle = this.responseText;
+    var numbers = [];
+    var horizontals = [];
+    var verticals = [];
+    var line_size = 2*size-1;
+    for(i = 0; i < size; i++) {
+        for(j = 0; j < size; j++) {
+            var c = puzzle.charAt(2*line_size*i + 2*j);
+            if (c != '.') {
+                numbers.push([i+1, j+1, parseInt(c)]);
+            }
+            if (j < size - 1) {
+                var c = puzzle.charAt(2*line_size*i + 2*j+1);
+                if (c == '(') {
+                    horizontals.push([i+1, j+1, '<']);
+                } else if (c == ')') {
+                    horizontals.push([i+1, j+1, '>']);
+                }
+            }
+            if (i < size - 1) {
+                var c = puzzle.charAt((2*i+1)*line_size + 2*j);
+                if (c == '^') {
+                    verticals.push([i+1, j+1, '<']);
+                } else if (c == 'v') {
+                    verticals.push([i+1, j+1, '>']);
+                }
+            }
+        }
+    }
+    loadGame(numbers, horizontals, verticals);
+}
+
+function loadGame(numbers, horizontals, verticals) {
+    n = size;
+    document.documentElement.style.setProperty('--n', size);
+    document.body.textContent = '';
     document.body.classList.add("theme_pad");
     createMenu();
     createSide();
     createGrid();
     modeGuess();
-    loadBoard(numbers, horizontal, vertical);
+    loadBoard(numbers, horizontals, verticals);
 }
 
 function loadChooseLevels() {
@@ -500,4 +561,5 @@ function loadChooseLevels() {
     createMenuLevels();
     createSideLevels();
     createGridLevels();
+    setSize(board_side[size-1]);
 }
